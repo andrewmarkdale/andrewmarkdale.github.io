@@ -1,6 +1,6 @@
 
 function preload(){
-  sound = loadSound('gymnopediefullloud.mp3');
+  sound = loadSound('clairdelune.mp3');
 }
 const maxiterations = 100;
 const colorsRed = [];
@@ -8,6 +8,7 @@ const colorsGreen = [];
 const colorsBlue = [];
 let angle = 0;
 let xplace = 0;
+let flag = true;
 function setup() {
   pixelDensity(1);
   
@@ -45,7 +46,19 @@ function draw() {
   
   
   let ca = map(xplace, 0, width, -1, 1);
-  xplace += 0.25;
+  if(flag == true){
+    xplace += 1.0;
+  }
+  else{
+    xplace -= 1.0;
+  }
+  console.log(xplace, width);
+  if(xplace >= width && flag == true){
+    flag = false;
+  }
+  else if(xplace <= 0 && flag == false){
+    flag = true;
+  }
   //let ca = averagew;
   //-0.70176;
   let cb = map(averages*50, 0, height, -1, 1); //-0.3842 + angle;
@@ -53,7 +66,6 @@ function draw() {
     ca = 0.0;
     cb = 0.0;
   }
-  rotate(PI/3.0);
 
   let w = 5;
   let h = (w * height) / width;
@@ -97,9 +109,9 @@ function draw() {
 
       let pix = (i + j * width) * 4;
       if (n == maxiterations) {
-        pixels[pix + 0] = 0;
-        pixels[pix + 1] = 0;
-        pixels[pix + 2] = 0;
+        pixels[pix + 0] = 1;
+        pixels[pix + 1] = 1;
+        pixels[pix + 2] = 1;
       } else {
         // Otherwise, use the colors that we made in setup()
         pixels[pix + 0] = colorsRed[n];
