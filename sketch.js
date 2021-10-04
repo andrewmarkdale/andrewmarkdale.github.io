@@ -2,7 +2,7 @@
 function preload(){
   sound = loadSound('clairdelune.mp3');
 }
-const maxiterations = 100;
+const maxiterations = 50;
 const colorsRed = [];
 const colorsGreen = [];
 const colorsBlue = [];
@@ -25,25 +25,18 @@ function setup() {
   //colorsGreen[n] = green(col);
   colorsBlue[n] = blue(col);
   }
-  angleMode(DEGREES);
+  frameRate(30);
 }
 
 function draw() {
   background(255);
-  push();
-  let waveform = fft.waveform();
-  let sumw = 0;
-  for(let i = 0; i < waveform.length; i++){
-    sumw += waveform[i];
-  }
-  let averagew = sumw / waveform.length;
-  let spectrum = fft.analyze();
-  let sums = 0;
-  for(let i = 0; i < spectrum.length; i++){
-      sums += spectrum[i];
-  }
-  let averages = sums / spectrum.length;
   
+  let spectrum = fft.analyze();
+  let sum = 0;
+  for(let i = 0; i < spectrum.length; i++){
+      sum += spectrum[i];
+  }
+  let average = sum / spectrum.length;
   
   let ca = map(xplace, 0, width, -1, 1);
   if(flag == true){
@@ -52,21 +45,18 @@ function draw() {
   else{
     xplace -= 1.0;
   }
-  console.log(xplace, width);
   if(xplace >= width && flag == true){
     flag = false;
   }
   else if(xplace <= 0 && flag == false){
     flag = true;
   }
-  //let ca = averagew;
   //-0.70176;
-  let cb = map(averages*50, 0, height, -1, 1); //-0.3842 + angle;
-  if(averages == 0){
+  let cb = map(average*50, 0, height, -1, 1); //-0.3842 + angle;
+  if(average == 0){
     ca = 0.0;
     cb = 0.0;
   }
-
   let w = 5;
   let h = (w * height) / width;
 
