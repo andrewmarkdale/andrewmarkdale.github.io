@@ -1,7 +1,7 @@
 
-function preload(){
-  sound = loadSound('clairdelune.mp3');
-}
+//function preload(){
+//  sound = loadSound('moonlightsonata.mp3');
+//}
 const maxiterations = 50;
 const colorsRed = [];
 const colorsGreen = [];
@@ -9,10 +9,11 @@ const colorsBlue = [];
 let angle = 0;
 let xplace = 0;
 let flag = true;
+let flag2 = false;
 function setup() {
   pixelDensity(1);
-  
-  let cnv = createCanvas(1280, 720);
+  sound = loadSound('gymnopediefull.mp3');
+  let cnv = createCanvas(640, 360);
   colorMode(HSB, 1);
   cnv.mouseClicked(togglePlay);
   fft = new p5.FFT();
@@ -30,33 +31,43 @@ function setup() {
 
 function draw() {
   background(255);
-  
-  let spectrum = fft.analyze();
-  let sum = 0;
-  for(let i = 0; i < spectrum.length; i++){
-      sum += spectrum[i];
-  }
-  let average = sum / spectrum.length;
-  
-  let ca = map(xplace, 0, width, -1, 1);
-  if(flag == true){
-    xplace += 1.0;
+  var ca, cb;
+  if(sound.isLoaded() && flag2 == true){
+    let spectrum = fft.analyze();
+    let wavelength = fft.waveform();
+    let sums = 0;
+    let sumw = 0;
+    for(let i = 0; i < spectrum.length; i++){
+        sums += spectrum[i];
+        sumw += wavelength[i];
+    }
+    let averages = sums / spectrum.length;
+    let averagew = sumw / wavelength.length;
+    //let ca = map(xplace, 0, width, -1, 1);
+    if(flag == true){
+      xplace += abs(averagew*500);
+    }
+    else{
+      xplace -= abs(averagew*500);
+    }
+    if(xplace >= width && flag == true){
+      flag = false;
+    }
+    else if(xplace <= 0 && flag == false){
+      flag = true;
+    }
+    ca = map(xplace, 0, width, -1, 1);
+    cb = map(averages*30, 0, height, -1, 1); //-0.3842 + angle;
   }
   else{
-    xplace -= 1.0;
-  }
-  if(xplace >= width && flag == true){
-    flag = false;
-  }
-  else if(xplace <= 0 && flag == false){
-    flag = true;
-  }
-  //-0.70176;
-  let cb = map(average*50, 0, height, -1, 1); //-0.3842 + angle;
-  if(average == 0){
     ca = 0.0;
     cb = 0.0;
   }
+  console.log(xplace);
+  //-0.70176;
+  //let ca = map(xplace, 0, width, -1, 1);
+  //let cb = map(averages*30, 0, height, -1, 1); //-0.3842 + angle;
+  
   let w = 5;
   let h = (w * height) / width;
 
@@ -112,13 +123,26 @@ function draw() {
     }
     y += dy;
   }
+  
   updatePixels();
+  
+  if(!sound.isLoaded()) {
+    text("Loading", 0 + width/100, height - height/100);
+    textSize(24);
+    fill(255);
+  }
+  //let time = millis();
+  //rotateX(time / 1000);
 }
 
 function togglePlay() {
-  if (sound.isPlaying()) {
-    sound.pause();
-  } else {
-    sound.loop();
-  }
+  if(sound.isLoaded()){
+    if (sound.isPlaying()) {
+      flag2 = false;
+      sound.pause();
+    } else {
+      flag2 = true;
+      sound.loop();
+    }
+}
 }
