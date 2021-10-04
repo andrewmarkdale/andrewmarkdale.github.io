@@ -1,2 +1,2 @@
 # andrewmarkdale.github.io
-Website
+## First project: Music visualization using the Julia set and FFT. 
