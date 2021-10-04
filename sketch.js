@@ -63,7 +63,7 @@ function draw() {
     ca = 0.0;
     cb = 0.0;
   }
-  console.log(xplace);
+
   //-0.70176;
   //let ca = map(xplace, 0, width, -1, 1);
   //let cb = map(averages*30, 0, height, -1, 1); //-0.3842 + angle;
